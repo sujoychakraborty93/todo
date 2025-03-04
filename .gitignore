@@ -14,7 +14,7 @@
 /backend/frontend/coverage
 
 # production
-/backend/frontend/build
+# /backend/frontend/build
 
 # misc
 .DS_Store
