@@ -6,15 +6,16 @@ import cors from "cors";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+console.log("oorigin ", process.env.ORIGIN)
+app.use(cors({
+  origin: [process.env.ORIGIN],
+}));
 
 // -- use for prod build start
 import path from "path"; 
 const _dirname = path.dirname("");
 const buildpath = path.join(_dirname, "/frontend/build/")
-console.log("node_env ", process.env.NODE_ENV)
 if (process.env.NODE_ENV == "PROD") {
-  console.log("first")
   app.use(express.static(buildpath))
   app.get('/', (req, res) => {
     res.sendFile('/frontend/build/index.html', { root: '.' })
