@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './App.css';
 
-// const API_URL = "http://localhost:5100/items";
+// const API_URL = "http://localhost:5100/api/items";
 const API_URL = "/api/items";
 
 function App() {

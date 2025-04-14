@@ -1,11 +1,27 @@
-require("dotenv").config();
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
+import dotenv from 'dotenv';
+dotenv.config();
+import express, { json } from "express";
+import mongoose from "mongoose";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// -- use for prod build start
+import path from "path"; 
+const _dirname = path.dirname("");
+const buildpath = path.join(_dirname, "/frontend/build/")
+console.log("node_env ", process.env.NODE_ENV)
+if (process.env.NODE_ENV == "PROD") {
+  console.log("first")
+  app.use(express.static(buildpath))
+  app.get('/', (req, res) => {
+    res.sendFile('/frontend/build/index.html', { root: '.' })
+  })
+}
+// -- use for prod build end
+
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI);
@@ -17,12 +33,12 @@ const ItemsSchema = new mongoose.Schema({
 const Items = mongoose.model("Item", ItemsSchema, "Items_Collection");
 
 // Routes
-app.get("/items", async (req, res) => {
+app.get("/api/items", async (req, res) => {
   const items = await Items.find();
   res.json(items);
 });
 
-app.post("/items", async (req, res) => {
+app.post("/api/items", async (req, res) => {
   const newItem = new Items({ text: req.body.text });
   await newItem.save();
   res.json(newItem);
