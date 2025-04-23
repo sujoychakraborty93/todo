@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './App.css';
+import { Helmet } from 'react-helmet';
 
 // const API_URL = "http://localhost:5100/api/items";
 const API_URL = "/api/items";
@@ -23,6 +24,10 @@ function App() {
 
   return (
     <div className="App-header">
+      <Helmet>
+        <title>My Todo App</title>
+        <meta name="description" content="myquizap"/>
+      </Helmet>
       <h1>To-Do List</h1>
       <div>
         <input value={text} onChange={(e) => setText(e.target.value)} />
