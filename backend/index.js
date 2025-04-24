@@ -3,6 +3,7 @@ dotenv.config();
 import express, { json } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import helmet from "helmet";
 
 const app = express();
 app.use(express.json());
@@ -23,6 +24,31 @@ if (process.env.NODE_ENV == "PROD") {
 }
 // -- use for prod build end
 
+app.use(helmet());
+app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:"],
+        connectSrc: ["'self'"],
+      },
+    })
+  );
+app.use(helmet.frameguard({ action: 'sameorigin' }));
+app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
+app.use(helmet.noSniff());
+// Permissions-Policy (not covered by Helmet by default)
+app.use((req, res, next) => {
+    res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+    res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+    // use below 3 lines if not using helmet for these 3 options below 
+    // res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    // res.setHeader('X-Content-Type-Options', 'nosniff');
+    // res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    next();
+});
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI);
